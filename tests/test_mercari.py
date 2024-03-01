@@ -1,6 +1,6 @@
 import unittest
 import postalservice
-from baseservicetestclass import _BaseServiceTestClass
+from .baseservicetestclass import _BaseServiceTestClass
 
 class MercariServiceTest(_BaseServiceTestClass, unittest.TestCase):
     def setUp(self) -> None:
