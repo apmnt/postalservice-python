@@ -64,7 +64,7 @@ class MercariService(PostalService):
             "defaultDatasets": ["DATASET_TYPE_MERCARI", "DATASET_TYPE_BEYOND"],
             "serviceFrom": "suruga",
             "userId": "",
-            "withItemBrand": False,
+            "withItemBrand": True,
             "withItemSize": True
         }
         headers = {
@@ -115,5 +115,5 @@ class MercariService(PostalService):
         item_json = json.dumps(cleaned_items_list)
         return item_json
     
-    def get_search_params(self, data: SearchParams):
-        return data.get_all()
+    def get_search_params(self, data: SearchParams) -> str:
+        return None

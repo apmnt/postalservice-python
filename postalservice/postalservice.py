@@ -9,12 +9,12 @@ class PostalService(ABC):
         pass
 
     @abstractmethod
-    def parse_response(self, response: str):
+    def parse_response(self, response: str) -> str:
 
         pass
 
     @abstractmethod
-    def get_search_params(self, data: SearchParams):
+    def get_search_params(self, data: SearchParams) -> str:
 
         pass
     
