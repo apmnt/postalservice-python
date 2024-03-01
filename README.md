@@ -1,2 +1,2 @@
 # Postal Service Python Backend
-![unittests](https://github.com/apmnt/postalservice_python/actions/workflows/unittest.yml/badge.svg)
+[![Mercari](https://github.com/apmnt/postalservice_python/actions/workflows/mercari_tests.yml/badge.svg)](https://github.com/apmnt/postalservice_python/actions/workflows/mercari_tests.yml)
