@@ -7,29 +7,45 @@ from postalservice.utils.network_utils import get_pop_jwt
 from postalservice.utils.search_utils import SearchParams
 
 CHARACTERS = string.ascii_lowercase + string.digits
-HITS_PER_PAGE = 10
+
+SIZE_MAP = {
+    "S": "2",
+    "M": "3",
+    "L": "4",
+    "XL": "5",
+}
 
 class MercariService(PostalService):
     
-    async def fetch_data(self, message: str) -> httpx.Response:
+    async def fetch_data(self, params: dict) -> httpx.Response:
 
-        search_term = message
+        if not isinstance(params, dict):
+            raise TypeError('params must be a dict')
+
+        keyword = params.get('keyword')
+
+        sizes = params.get('size')
+        if sizes is not None: mapped_sizes = [SIZE_MAP.get(size) for size in sizes]
+        else: mapped_sizes = []
+
+        item_count = params.get('item_count')
+        page = params.get('page')
 
         url = "https://api.mercari.jp/v2/entities:search"
         searchSessionId = ''.join(random.choice(CHARACTERS) for i in range(32))
         payload = {
             "userId": "",
-            "pageSize": HITS_PER_PAGE,
+            "pageSize": item_count,
             "searchSessionId": searchSessionId,
             "indexRouting": "INDEX_ROUTING_UNSPECIFIED",
             "thumbnailTypes": [],
             "searchCondition": {
-                "keyword": search_term,
+                "keyword": keyword,
                 "excludeKeyword": "",
                 "sort": "SORT_CREATED_TIME",
                 "order": "ORDER_DESC",
-                "status": [],
-                "sizeId": [],
+                "status": ["STATUS_ON_SALE"],
+                "sizeId": mapped_sizes,
                 "categoryId": [],
                 "brandId": [],
                 "sellerId": [],

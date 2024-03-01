@@ -2,18 +2,45 @@ import json
 
 class SearchParams:
     def __init__(self, search_params: dict):
+        # Check that the search_params has the required keys
+        if not all(
+            key in search_params
+            for key in ["size", "keyword", "category", "brand", "item_count", "page"]
+        ):
+            raise KeyError(
+                "search_params must contain the following keys: size, keyword, category, brand, item_count, page"
+            )
         self.search_params = search_params
 
+    def __init__(
+        self,
+        keyword: str,
+        sizes: list = None,
+        category: str = None,
+        brands: list = None,
+        item_count: int = 10,
+        page: int = 0,
+    ):
+        self.search_params = {
+            "size": sizes,
+            "keyword": keyword,
+            "category": category,
+            "brand": brands,
+            "item_count": item_count,
+            "page": page,
+        }
+
     def get_size(self):
-        return self.search_params.get('size')
+        return self.search_params.get("size")
 
     def get_dict(self):
         return self.search_params
-    
+
+
 class SearchResults:
     """
     Represents a collection of search results.
-    Fields:
+    Fields for each item:
     id -> string
     title -> string
     price -> float
@@ -39,16 +66,16 @@ class SearchResults:
         Returns all search results as a list of dictionaries.
         """
         return self.results
-    
+
     def count(self) -> int:
         """
         Returns the total number of search results.
         """
         return len(self.results)
-    
+
     def __str__(self) -> str:
         result_strings = []
         for i, result in enumerate(self.results, start=1):
-            item_str = f"Item {i}: ID={result.get('id')}, Title={result.get('title')}, Price={result.get('price')}, Size={result.get('size')}, URL={result.get('url')}"
+            item_str = f"Item {i}: ID={result.get('id')}, Title={result.get('title')}, Price={result.get('price')}, Size={result.get('size')}"
             result_strings.append(item_str)
         return f"Total search results: {self.count()}\n" + "\n".join(result_strings)
