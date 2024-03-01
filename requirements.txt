@@ -1,0 +1,5 @@
+cryptography
+httpx
+jose
+python_jose
+setuptools
