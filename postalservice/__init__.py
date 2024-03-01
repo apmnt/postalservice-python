@@ -1,0 +1,1 @@
+from .mercariservice import MercariService
