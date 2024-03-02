@@ -3,3 +3,4 @@ httpx
 jose
 python_jose
 setuptools
+bs4
