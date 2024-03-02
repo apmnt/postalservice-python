@@ -1,5 +1,4 @@
 import json
-from types import NoneType
 
 class SearchParams:
     def __init__(self, search_params: dict):
