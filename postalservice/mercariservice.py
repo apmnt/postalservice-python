@@ -17,16 +17,20 @@ SIZE_MAP = {
 
 class MercariService(PostalService):
     
-    async def fetch_data(self, params: dict) -> str:
-        '''
-        Fetches data from the Mercari API.
+    async def fetch_data(self, params: dict) -> httpx.Response:
+        """
+        Fetches data from the Mercari API using the provided search parameters.
 
         Args:
             params (dict): The search parameters.
 
         Returns:
             httpx.Response: The response from the API.
-        '''
+
+        Raises:
+            TypeError: If params is not a dictionary.
+            Exception: If the API request fails.
+        """
 
         if not isinstance(params, dict):
             raise TypeError('params must be a dict')
@@ -87,20 +91,26 @@ class MercariService(PostalService):
             else: 
                 raise Exception(f"Failed to fetch data from Mercari API. Status code: {response.status_code}")
         
-    def parse_response(self, response: str) -> str:
+    def parse_response(self, response: httpx.Response) -> str:
         """
-        Parses the response from the Mercari API and returns a cleaned JSON string.
+        Parses the response from the Mercari API and returns a JSON string of cleaned items.
+
+        Each item is a dictionary with the following keys:
+        - 'id': The item's ID.
+        - 'title': The item's name.
+        - 'price': The item's price.
+        - 'size': The item's size, or None if not available.
+        - 'url': The URL of the item.
+        - 'img': A list of the item's thumbnails.
 
         Args:
-            response (str): The response from the API.
+            response (httpx.Response): The response from the API.
 
         Returns:
-            str: The cleaned JSON string.
-
-        Raises:
-            TypeError: If the response argument is not a string.
+            str: A JSON string of cleaned items.
         """
-        items = json.loads(response)['items']
+    
+        items = json.loads(response.text)['items']
         cleaned_items_list = []
         for item in items:
             temp = {}
@@ -108,7 +118,9 @@ class MercariService(PostalService):
             temp['title'] = item['name']
             price = float(item.get('price'))
             temp['price'] = price
-            temp['size'] = item['itemSize'].get('name')
+            if item.get('itemSize') is not None:
+                temp['size'] = item['itemSize'].get('name')
+            else: temp['size'] = None
             temp['url'] =  'https://jp.mercari.com/item/' + item['id']
             temp['img'] = item['thumbnails']
             cleaned_items_list.append(temp)
