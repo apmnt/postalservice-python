@@ -4,3 +4,4 @@ jose
 python_jose
 setuptools
 bs4
+lxml
