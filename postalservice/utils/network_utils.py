@@ -3,6 +3,7 @@ import uuid
 import time
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives import serialization
+import httpx
 from jose import jwt
 
 def get_pop_jwt(url, method="GET"):
@@ -38,3 +39,8 @@ def get_pop_jwt(url, method="GET"):
                          algorithm='ES256', headers=header)
     
     return pop_jwt
+
+async def fetch_async(url):
+    async with httpx.AsyncClient(timeout=15) as client:
+        response = await client.get(url)
+        return response
