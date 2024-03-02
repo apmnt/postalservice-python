@@ -17,7 +17,16 @@ SIZE_MAP = {
 
 class MercariService(PostalService):
     
-    async def fetch_data(self, params: dict) -> httpx.Response:
+    async def fetch_data(self, params: dict) -> str:
+        '''
+        Fetches data from the Mercari API.
+
+        Args:
+            params (dict): The search parameters.
+
+        Returns:
+            httpx.Response: The response from the API.
+        '''
 
         if not isinstance(params, dict):
             raise TypeError('params must be a dict')
@@ -78,38 +87,30 @@ class MercariService(PostalService):
             else: 
                 raise Exception(f"Failed to fetch data from Mercari API. Status code: {response.status_code}")
         
-        
     def parse_response(self, response: str) -> str:
-        items = json.loads(response.text)['items']
+        """
+        Parses the response from the Mercari API and returns a cleaned JSON string.
+
+        Args:
+            response (str): The response from the API.
+
+        Returns:
+            str: The cleaned JSON string.
+
+        Raises:
+            TypeError: If the response argument is not a string.
+        """
+        items = json.loads(response)['items']
         cleaned_items_list = []
         for item in items:
             temp = {}
-
-            # Check that each field is of the expected type
-            if not isinstance(item.get('id'), str):
-                raise TypeError('id must be a string')
             temp['id'] = item['id']
-
-            if not isinstance(item.get('name'), str):
-                raise TypeError('name must be a string')
             temp['title'] = item['name']
-
             price = float(item.get('price'))
-            if not isinstance(price, (int, float)):
-                raise TypeError('price must be a number')
-            temp['price'] = item['price']
-
-            if item.get('itemSize') and isinstance(item['itemSize'], dict):
-                temp['size'] = item['itemSize'].get('name')
-            else:
-                temp['size'] = None
-
+            temp['price'] = price
+            temp['size'] = item['itemSize'].get('name')
             temp['url'] =  'https://jp.mercari.com/item/' + item['id']
-
-            if not isinstance(item.get('thumbnails'), list):
-                raise TypeError('thumbnails must be a list')
             temp['img'] = item['thumbnails']
-                
             cleaned_items_list.append(temp)
 
         item_json = json.dumps(cleaned_items_list)
