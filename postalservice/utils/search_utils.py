@@ -50,7 +50,29 @@ class SearchResults:
     """
 
     def __init__(self, results_json: str):
-        self.results = json.loads(results_json)
+        try:
+            results = json.loads(results_json)
+        except json.JSONDecodeError:
+            raise ValueError("Invalid JSON string")
+
+        for result in results:
+            if not all(key in result for key in ["id", "title", "price", "size", "url", "img"]):
+                raise ValueError("Missing expected key in result")
+
+        if not isinstance(result["id"], str):
+            raise ValueError(f"id must be a string, not {type(result['id'])}")
+        if not isinstance(result["title"], str):
+            raise ValueError(f"title must be a string, not {type(result['title'])}")
+        if not isinstance(result["price"], float):
+            raise ValueError(f"price must be a float, not {type(result['price'])}")
+        if not isinstance(result["size"], str):
+            raise ValueError(f"size must be a string, not {type(result['size'])}")
+        if not isinstance(result["url"], str):
+            raise ValueError(f"url must be a string, not {type(result['url'])}")
+        if not isinstance(result["img"], list) or not all(isinstance(i, str) for i in result["img"]):
+            raise ValueError(f"img must be a list of strings, not {type(result['img'])}")
+
+        self.results = results
 
     def get(self, index: int) -> dict:
         """
