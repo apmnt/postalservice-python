@@ -202,5 +202,8 @@ class MercariService(BaseService):
         item_json = json.dumps(cleaned_items_list)
         return item_json
     
+    async def parse_response_async(self, response: httpx.Response) -> str:
+        return self.parse_response(response)
+    
     def get_search_params(self, data: SearchParams) -> str:
         return None
