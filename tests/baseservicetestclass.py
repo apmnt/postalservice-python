@@ -27,7 +27,7 @@ class _BaseServiceTestClass(object):
         # Assert that the status code is 200
         self.assertEqual(res.status_code, 200)
 
-    def test_parse_results_positive_count(self):
+    def test_parse_results_count_over_zero(self):
 
         sparams = SearchParams("comme des garcons")
         res = self.service.fetch_data(sparams.get_dict())
@@ -45,6 +45,22 @@ class _BaseServiceTestClass(object):
         sparams = SearchParams("comme des garcons", sizes=[size_to_search])
         res = self.service.fetch_data(sparams.get_dict())
         items = self.service.parse_response(res)
+        searchresults = SearchResults(items)
+        sizes = "Listing sizes:\n"
+        for i in range(searchresults.count()):
+            sizes += "Size: " + searchresults.get(i)["size"] + "\n"
+        self.logger.info(sizes)
+
+        # Loop through the items and assert the size is XL
+        for i in range(searchresults.count()):
+            self.assertTrue(size_to_search in searchresults.get(i)["size"])
+
+    def test_search_by_size_async(self):
+
+        size_to_search = "XL"
+        sparams = SearchParams("comme des garcons", sizes=[size_to_search])
+        res = asyncio.run(self.service.fetch_data_async(sparams.get_dict()))
+        items = asyncio.run(self.service.parse_response_async(res))
         searchresults = SearchResults(items)
         sizes = "Listing sizes:\n"
         for i in range(searchresults.count()):
