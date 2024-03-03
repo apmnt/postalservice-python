@@ -21,7 +21,7 @@ class _BaseServiceTestClass(object):
     def test_fetch_code_200(self):
 
         sparams = SearchParams("comme des garcons")
-        res = asyncio.run(self.service.fetch_data(sparams.get_dict()))
+        res = self.service.fetch_data(sparams.get_dict())
         self.logger.info("Fetched data: %s", res)
 
         # Assert that the status code is 200
@@ -30,7 +30,7 @@ class _BaseServiceTestClass(object):
     def test_parse_results_positive_count(self):
 
         sparams = SearchParams("comme des garcons")
-        res = asyncio.run(self.service.fetch_data(sparams.get_dict()))
+        res = self.service.fetch_data(sparams.get_dict())
         items = self.service.parse_response(res)
         searchresults = SearchResults(items)
         self.logger.info(searchresults)
@@ -43,7 +43,7 @@ class _BaseServiceTestClass(object):
 
         size_to_search = "XL"
         sparams = SearchParams("comme des garcons", sizes=[size_to_search])
-        res = asyncio.run(self.service.fetch_data(sparams.get_dict()))
+        res = self.service.fetch_data(sparams.get_dict())
         items = self.service.parse_response(res)
         searchresults = SearchResults(items)
         sizes = "Listing sizes:\n"

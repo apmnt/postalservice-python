@@ -6,7 +6,12 @@ from postalservice.utils.search_utils import SearchParams
 
 class BaseService(ABC):
     @abstractmethod
-    async def fetch_data(self, params: dict) -> httpx.Response:
+    def fetch_data(self, params: dict) -> httpx.Response:
+
+        pass
+
+    @abstractmethod
+    async def fetch_data_async(self, params: dict) -> httpx.Response:
 
         pass
 
@@ -20,15 +25,11 @@ class BaseService(ABC):
 
         pass
 
-    def get_search_results(self, params: dict) -> str:
-        res = asyncio.run(self.fetch_data(params))
+    async def get_search_results_async(self, params: dict) -> str:
+        res = await self.fetch_data_async(params)
         return self.parse_response(res)
     
-    def get_search_results_dict(self, params: dict) -> dict:
-        print(params)
-        res = asyncio.run(self.fetch_data(params))
-        print(res)
-        parsed_response = self.parse_response(res)
-        itemdict = json.loads(parsed_response)
-        return itemdict
-        
+    def get_search_results(self, params: dict) -> str:
+        res = self.fetch_data(params)
+        items = self.parse_response(res)
+        return items

@@ -3,9 +3,9 @@ import random
 import string
 import httpx
 import bs4
-from postalservice.postalservice import PostalService
-from postalservice.utils.search_utils import SearchParams
-from postalservice.utils.network_utils import fetch_async
+from .baseservice import BaseService
+from .utils.search_utils import SearchParams
+from .utils.network_utils import fetch_async
 import re
 import asyncio
 
@@ -22,21 +22,30 @@ SIZE_MAP = {
     "XXL~": 10009
 }
 
-class FrilService(PostalService):
+class FrilService(BaseService):
 
-    async def fetch_data(self, params: dict) -> httpx.Response:
-
+    async def fetch_data_async(self, params: dict) -> httpx.Response:
         url = self.get_search_params(params)
-
         res = await fetch_async(url)
-
         return res
+    
+    def fetch_data(self, params: dict) -> httpx.Response:
+            url = self.get_search_params(params)
+            res = httpx.get(url)
+            return res
 
+    async def parse_response_async(self, response: httpx.Response) -> str:
+        soup = bs4.BeautifulSoup(response.text, "lxml")
+        results = soup.select(".item")
+        cleaned_items_list = self.get_base_details(results)
+        cleaned_items_list_with_details = await self.add_details_async(cleaned_items_list)
+        return json.dumps(cleaned_items_list_with_details)
+    
     def parse_response(self, response: httpx.Response) -> str:
         soup = bs4.BeautifulSoup(response.text, "lxml")
         results = soup.select(".item")
         cleaned_items_list = self.get_base_details(results)
-        cleaned_items_list_with_details = asyncio.run(self.add_details(cleaned_items_list))
+        cleaned_items_list_with_details = self.add_details(cleaned_items_list)
         return json.dumps(cleaned_items_list_with_details)
 
     def get_base_details(self, results) -> list:
@@ -54,11 +63,11 @@ class FrilService(PostalService):
             cleaned_items_list.append(temp)
         return cleaned_items_list
 
-    async def add_details(self, items: list) -> str:
+    async def add_details_async(self, items: list) -> str:
         tasks = []
         for item in items:
             url = item["url"]
-            task = asyncio.create_task(self.fetch_item_page(url))
+            task = asyncio.create_task(self.fetch_item_page_async(url))
             tasks.append(task)
         responses = await asyncio.gather(*tasks)
         item_details = [response.text for response in responses]
@@ -67,9 +76,23 @@ class FrilService(PostalService):
             items[i] = {**items[i], **self.parse_item_details(details)}
 
         return items
+    
+    def add_details(self, items: list) -> str:
+        for i, item in enumerate(items):
+            print(f"Fetching details for item {i+1} of {len(items)}")
+            print(item)
+            url = item["url"]
+            response = self.fetch_item_page(url)
+            details = self.parse_item_details(response.text)
+            items[i] = {**items[i], **details}
+        return items
 
-    async def fetch_item_page(self, url):
+    async def fetch_item_page_async(self, url):
         response = await fetch_async(url)
+        return response
+    
+    def fetch_item_page(self, url):
+        response = httpx.get(url)
         return response
     
     def parse_item_details(self, response_text: str):
