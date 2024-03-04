@@ -65,8 +65,8 @@ class SearchResults:
                 raise ValueError(f"title must be a string, not {type(result['title'])}")
             if not isinstance(result["price"], float):
                 raise ValueError(f"price must be a float, not {type(result['price'])}")
-            if size := result["size"]:
-                if not isinstance(size, str):
+            if result["size"]:
+                if not isinstance(result["size"], str):
                     raise ValueError(f"size must be a string, not {type(result['size'])}")
             if not isinstance(result["url"], str):
                 raise ValueError(f"url must be a string, not {type(result['url'])}")
