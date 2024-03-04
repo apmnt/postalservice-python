@@ -104,8 +104,4 @@ class SearchResults:
         return len(self.results)
 
     def __str__(self) -> str:
-        result_strings = []
-        for i, result in enumerate(self.results, start=1):
-            item_str = f"Item {i}: ID={result.get('id')}, Title={result.get('title')}, Price={result.get('price')}, Size={result.get('size')}"
-            result_strings.append(item_str)
-        return f"Total search results: {self.count()}\n" + "\n".join(result_strings)
+        return json.dumps(self.results, indent=4, ensure_ascii=False)
