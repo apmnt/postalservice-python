@@ -42,12 +42,3 @@ class BaseService(ABC):
         items = self.parse_response(res)
         searchresults = SearchResults(items)
         return searchresults
-    
-    async def get_search_results_as_list_async(self, params: dict) -> list:
-        res = await self.fetch_data_async(params)
-        return json.loads(await self.parse_response_async(res))
-    
-    def get_search_results_as_list(self, params: dict) -> list:
-        res = self.fetch_data(params)
-        items = self.parse_response(res)
-        return json.loads(items)
