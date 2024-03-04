@@ -14,12 +14,12 @@ CHARACTERS = string.ascii_lowercase + string.digits
 
 SIZE_MAP = {
     "FREE / ONESIZE": 19998,
-    "~XS": 10001,
+    "XS": 10001,
     "S": 10003,
     "M": 10004,
     "L": 10005,
     "XL": 10008,
-    "XXL~": 10009
+    "XXL": 10009
 }
 
 class FrilService(BaseService):
@@ -63,7 +63,7 @@ class FrilService(BaseService):
             cleaned_items_list.append(temp)
         return cleaned_items_list
 
-    async def add_details_async(self, items: list) -> str:
+    async def add_details_async(self, items: list) -> list:
         tasks = []
         for item in items:
             url = item["url"]
@@ -77,7 +77,7 @@ class FrilService(BaseService):
 
         return items
     
-    def add_details(self, items: list) -> str:
+    def add_details(self, items: list) -> list:
         for i, item in enumerate(items):
             print(f"Fetching details for item {i+1} of {len(items)}")
             print(item)
@@ -111,8 +111,9 @@ class FrilService(BaseService):
         
         size = params.get('size')
         if "size" in params and size is not None:
-            size_string = size[0]
-            size_id = SIZE_MAP[size_string]
+            if size not in SIZE_MAP:
+                raise ValueError(f"Size {size} is not supported")
+            size_id = SIZE_MAP[size]
             url += f"&size_group_id=3&size_id={size_id}"
 
         return url
