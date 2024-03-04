@@ -81,8 +81,6 @@ class FrilService(BaseService):
     
     def add_details(self, items: list) -> list:
         for i, item in enumerate(items):
-            print(f"Fetching details for item {i+1} of {len(items)}")
-            print(item)
             url = item["url"]
             response = self.fetch_item_page(url)
             details = self.parse_item_details(response.text)
