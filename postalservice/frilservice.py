@@ -25,14 +25,16 @@ SIZE_MAP = {
 class FrilService(BaseService):
 
     async def fetch_data_async(self, params: dict) -> httpx.Response:
+        self.item_count = params.get("item_count", 36)
         url = self.get_search_params(params)
         res = await fetch_async(url)
         return res
     
     def fetch_data(self, params: dict) -> httpx.Response:
-            url = self.get_search_params(params)
-            res = httpx.get(url)
-            return res
+        self.item_count = params.get("item_count", 36)
+        url = self.get_search_params(params)
+        res = httpx.get(url)
+        return res
 
     async def parse_response_async(self, response: httpx.Response) -> str:
         soup = bs4.BeautifulSoup(response.text, "lxml")
@@ -50,7 +52,7 @@ class FrilService(BaseService):
 
     def get_base_details(self, results) -> list:
         cleaned_items_list = []
-        for item in results[:10]:
+        for item in results[:self.item_count]:
             id = item.select_one(".link_search_image")["href"].split("/")[-1]
             temp = {}
             temp["id"] = id

@@ -20,7 +20,6 @@ class _BaseServiceTestClass(object):
         cls.logger = logger
 
     def test_fetch_code_200(self):
-
         sparams = SearchParams("comme des garcons")
         res = self.service.fetch_data(sparams.get_dict())
         self.logger.info("Fetched data: %s", res)
@@ -28,8 +27,15 @@ class _BaseServiceTestClass(object):
         # Assert that the status code is 200
         self.assertEqual(res.status_code, 200)
 
-    def test_parse_results(self):
+    def test_fetch_code_200_async(self):
+        sparams = SearchParams("comme des garcons")
+        res = asyncio.run(self.service.fetch_data_async(sparams.get_dict()))
+        self.logger.info("Fetched data: %s", res)
 
+        # Assert that the status code is 200
+        self.assertEqual(res.status_code, 200)
+
+    def test_parse_results(self):
         sparams = SearchParams("comme des garcons")
         res: httpx.Response = self.service.fetch_data(sparams.get_dict())
         print(res)
@@ -40,8 +46,31 @@ class _BaseServiceTestClass(object):
         # Assert that the count is greater than 0
         self.assertTrue(searchresults.count() > 0)
 
-    def test_search_by_size(self):
+    def test_parse_results_async(self):
+        sparams = SearchParams("comme des garcons")
+        res = asyncio.run(self.service.fetch_data_async(sparams.get_dict()))
+        items = asyncio.run(self.service.parse_response_async(res))
+        searchresults = SearchResults(items)
+        self.logger.info(searchresults)
 
+        # Assert that the count is greater than 0
+        self.assertTrue(searchresults.count() > 0)
+
+    def test_get_5_results(self):
+        sparams = SearchParams("comme des garcons", item_count=5)
+        searchresults = self.service.get_search_results(sparams.get_dict())
+
+        # Assert that the count is 5
+        self.assertEqual(searchresults.count(), 5)
+
+    def test_get_5_results_async(self):
+        sparams = SearchParams("comme des garcons", item_count=5)
+        searchresults = asyncio.run(self.service.get_search_results_async(sparams.get_dict()))
+
+        # Assert that the count is 5
+        self.assertEqual(searchresults.count(), 5)
+
+    def test_search_by_size(self):
         size_to_search = "XL"
         sparams = SearchParams("comme des garcons", size=size_to_search)
         searchresults = self.service.get_search_results(sparams.get_dict())
@@ -52,7 +81,6 @@ class _BaseServiceTestClass(object):
             self.assertTrue(size_to_search in searchresults.get(i)["size"])
 
     def test_search_by_size_async(self):
-
         size_to_search = "XL"
         sparams = SearchParams("comme des garcons", size=size_to_search)
         searchresults = asyncio.run(self.service.get_search_results_async(sparams.get_dict()))

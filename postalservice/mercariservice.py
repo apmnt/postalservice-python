@@ -37,12 +37,12 @@ class MercariService(BaseService):
             raise TypeError('params must be a dict')
 
         keyword = params.get('keyword')
-
         size = params.get('size')
+        item_count = params.get('item_count')
+
         if size is not None: mapped_size = SIZE_MAP.get(size)
         else: mapped_size = None
 
-        item_count = params.get('item_count')
         url = "https://api.mercari.jp/v2/entities:search"
         searchSessionId = ''.join(random.choice(CHARACTERS) for i in range(32))
         payload = {
