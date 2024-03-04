@@ -38,13 +38,11 @@ class MercariService(BaseService):
 
         keyword = params.get('keyword')
 
-        sizes = params.get('size')
-        if sizes is not None: mapped_sizes = [SIZE_MAP.get(size) for size in sizes]
-        else: mapped_sizes = []
+        size = params.get('size')
+        if size is not None: mapped_size = SIZE_MAP.get(size)
+        else: mapped_size = None
 
         item_count = params.get('item_count')
-        page = params.get('page')
-
         url = "https://api.mercari.jp/v2/entities:search"
         searchSessionId = ''.join(random.choice(CHARACTERS) for i in range(32))
         payload = {
@@ -59,7 +57,7 @@ class MercariService(BaseService):
                 "sort": "SORT_CREATED_TIME",
                 "order": "ORDER_DESC",
                 "status": ["STATUS_ON_SALE"],
-                "sizeId": mapped_sizes,
+                "sizeId": [mapped_size],
                 "categoryId": [],
                 "brandId": [],
                 "sellerId": [],
@@ -110,12 +108,11 @@ class MercariService(BaseService):
 
         keyword = params.get('keyword')
 
-        sizes = params.get('size')
-        if sizes is not None: mapped_sizes = [SIZE_MAP.get(size) for size in sizes]
-        else: mapped_sizes = []
+        size = params.get('size')
+        if size is not None: mapped_size = SIZE_MAP.get(size)
+        else: mapped_size = None
 
         item_count = params.get('item_count')
-        page = params.get('page')
 
         url = "https://api.mercari.jp/v2/entities:search"
         searchSessionId = ''.join(random.choice(CHARACTERS) for i in range(32))
@@ -131,7 +128,7 @@ class MercariService(BaseService):
                 "sort": "SORT_CREATED_TIME",
                 "order": "ORDER_DESC",
                 "status": ["STATUS_ON_SALE"],
-                "sizeId": mapped_sizes,
+                "sizeId": [mapped_size],
                 "categoryId": [],
                 "brandId": [],
                 "sellerId": [],
@@ -206,4 +203,4 @@ class MercariService(BaseService):
         return self.parse_response(response)
     
     def get_search_params(self, data: SearchParams) -> str:
-        return None
+        return ""
