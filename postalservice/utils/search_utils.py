@@ -1,4 +1,5 @@
 import json
+import typing
 
 class SearchParams:
     def __init__(self, search_params: dict):
@@ -15,14 +16,14 @@ class SearchParams:
     def __init__(
         self,
         keyword: str,
-        sizes: list = None,
-        category: str = None,
-        brands: list = None,
-        item_count: int = 10,
-        page: int = 0,
+        size: typing.Optional[str] = None,
+        category: typing.Optional[str] = None,
+        brands: typing.Optional[list] = None,
+        item_count: typing.Optional[int] = 10,
+        page: typing.Optional[int] = 0,
     ):
         self.search_params = {
-            "size": sizes,
+            "size": size,
             "keyword": keyword,
             "category": category,
             "brand": brands,
@@ -64,27 +65,35 @@ class SearchResults:
                 raise ValueError(f"title must be a string, not {type(result['title'])}")
             if not isinstance(result["price"], float):
                 raise ValueError(f"price must be a float, not {type(result['price'])}")
-            if not isinstance(result["size"], (str, type(None))):
-                raise ValueError(f"size must be a string or NoneType, not {type(result['size'])}")
+            if result["size"]:
+                if not isinstance(result["size"], str):
+                    raise ValueError(f"size must be a string, not {type(result['size'])}")
             if not isinstance(result["url"], str):
                 raise ValueError(f"url must be a string, not {type(result['url'])}")
             if not isinstance(result["img"], list) or not all(isinstance(i, str) for i in result["img"]):
                 raise ValueError(f"img must be a list of strings, not {type(result['img'])}")
 
-        self.results = results
+        self.results: list = results
 
     def get(self, index: int) -> dict:
         """
         Returns the search result at the specified index as a dictionary.
+        If the index is out of range, an empty dictionary is returned.
         """
         try:
             return self.results[index]
         except IndexError:
-            return "Index out of range. No result found at the given index."
-
-    def get_all(self) -> list:
+            return {}
+    
+    def to_json(self) -> str:
         """
-        Returns all search results as a list of dictionaries.
+        Returns the search results as a JSON string.
+        """
+        return json.dumps(self.results)
+    
+    def to_list(self) -> list:
+        """
+        Returns the search results as a list of dictionaries.
         """
         return self.results
 
@@ -95,8 +104,4 @@ class SearchResults:
         return len(self.results)
 
     def __str__(self) -> str:
-        result_strings = []
-        for i, result in enumerate(self.results, start=1):
-            item_str = f"Item {i}: ID={result.get('id')}, Title={result.get('title')}, Price={result.get('price')}, Size={result.get('size')}"
-            result_strings.append(item_str)
-        return f"Total search results: {self.count()}\n" + "\n".join(result_strings)
+        return json.dumps(self.results, indent=4, ensure_ascii=False)
