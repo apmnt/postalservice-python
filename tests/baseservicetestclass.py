@@ -6,6 +6,7 @@ import postalservice
 import logging
 from postalservice.utils import SearchResults, SearchParams
 
+
 class _BaseServiceTestClass(object):
 
     @classmethod
@@ -38,7 +39,6 @@ class _BaseServiceTestClass(object):
     def test_parse_results(self):
         sparams = SearchParams("comme des garcons")
         res: httpx.Response = self.service.fetch_data(sparams.get_dict())
-        print(res)
         items: str = self.service.parse_response(res)
         searchresults = SearchResults(items)
         self.logger.info(searchresults)
@@ -65,7 +65,9 @@ class _BaseServiceTestClass(object):
 
     def test_get_5_results_async(self):
         sparams = SearchParams("comme des garcons", item_count=5)
-        searchresults = asyncio.run(self.service.get_search_results_async(sparams.get_dict()))
+        searchresults = asyncio.run(
+            self.service.get_search_results_async(sparams.get_dict())
+        )
 
         # Assert that the count is 5
         self.assertEqual(searchresults.count(), 5)
@@ -77,13 +79,15 @@ class _BaseServiceTestClass(object):
 
         # Loop through the items and assert the size is XL
         for i in range(searchresults.count()):
-            print(searchresults.get(i)["size"])
+            self.logger.info(searchresults.get(i)["size"])
             self.assertTrue(size_to_search in searchresults.get(i)["size"])
 
     def test_search_by_size_async(self):
         size_to_search = "XL"
         sparams = SearchParams("comme des garcons", size=size_to_search)
-        searchresults = asyncio.run(self.service.get_search_results_async(sparams.get_dict()))
+        searchresults = asyncio.run(
+            self.service.get_search_results_async(sparams.get_dict())
+        )
 
         # Loop through the items and assert the size is XL
         for i in range(searchresults.count()):
