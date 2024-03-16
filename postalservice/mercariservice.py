@@ -16,6 +16,7 @@ SIZE_MAP = {
     "XL": "5",
 }
 
+
 class MercariService(BaseService):
 
     def generate_payload_and_headers(self, params: dict):
@@ -25,6 +26,11 @@ class MercariService(BaseService):
         keyword = params.get("keyword")
         size = params.get("size")
         item_count = params.get("item_count")
+        page_number = params.get("page")
+        if page_number is None:
+            page_token = ""
+        else:
+            page_token = f"v1:{page_number - 1}"
 
         if size is not None:
             mapped_size = SIZE_MAP.get(size)
@@ -36,6 +42,7 @@ class MercariService(BaseService):
         payload = {
             "userId": "",
             "pageSize": item_count,
+            "pageToken": page_token,
             "searchSessionId": searchSessionId,
             "indexRouting": "INDEX_ROUTING_UNSPECIFIED",
             "thumbnailTypes": [],
