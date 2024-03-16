@@ -104,6 +104,10 @@ class FrilService(BaseService):
         tr_rows = soup.find_all("tr")
         if len(tr_rows) > 1:
             details["size"] = tr_rows[1].td.text
+
+        sp_slides = soup.find_all("div", class_="sp-slide")
+        details["img"] = [sp_slides[0].img["src"]]
+        # add all images from sp-slides
         return details
 
     def get_search_params(self, params: dict) -> str:
