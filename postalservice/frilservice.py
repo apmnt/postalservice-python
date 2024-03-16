@@ -22,6 +22,7 @@ SIZE_MAP = {
     "XXL": 10009,
 }
 
+
 class FrilService(BaseService):
 
     async def fetch_data_async(self, params: dict) -> httpx.Response:
@@ -121,5 +122,9 @@ class FrilService(BaseService):
                 raise ValueError(f"Size {size} is not supported")
             size_id = SIZE_MAP[size]
             url += f"&size_group_id=3&size_id={size_id}"
+
+        page = params.get("page")
+        if "page" in params and page is not None:
+            url += f"&page={page}"
 
         return url
