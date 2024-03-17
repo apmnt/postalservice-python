@@ -22,6 +22,7 @@ SIZE_MAP = {
     "XXL": 10009,
 }
 
+
 class FrilService(BaseService):
 
     async def fetch_data_async(self, params: dict) -> httpx.Response:
@@ -103,6 +104,10 @@ class FrilService(BaseService):
         tr_rows = soup.find_all("tr")
         if len(tr_rows) > 1:
             details["size"] = tr_rows[1].td.text
+
+        sp_slides = soup.find_all("div", class_="sp-slide")
+        if len(sp_slides) > 0:
+            details["img"] = [sp_slides[0].img["src"]]
         return details
 
     def get_search_params(self, params: dict) -> str:
@@ -121,5 +126,9 @@ class FrilService(BaseService):
                 raise ValueError(f"Size {size} is not supported")
             size_id = SIZE_MAP[size]
             url += f"&size_group_id=3&size_id={size_id}"
+
+        page = params.get("page")
+        if "page" in params and page is not None:
+            url += f"&page={page}"
 
         return url

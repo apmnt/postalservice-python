@@ -16,6 +16,7 @@ SIZE_MAP = {
     "XL": "5",
 }
 
+
 class MercariService(BaseService):
 
     def generate_payload_and_headers(self, params: dict):
@@ -25,6 +26,11 @@ class MercariService(BaseService):
         keyword = params.get("keyword")
         size = params.get("size")
         item_count = params.get("item_count")
+        page_number = params.get("page")
+        if page_number is None:
+            page_token = ""
+        else:
+            page_token = f"v1:{page_number - 1}"
 
         if size is not None:
             mapped_size = SIZE_MAP.get(size)
@@ -36,6 +42,7 @@ class MercariService(BaseService):
         payload = {
             "userId": "",
             "pageSize": item_count,
+            "pageToken": page_token,
             "searchSessionId": searchSessionId,
             "indexRouting": "INDEX_ROUTING_UNSPECIFIED",
             "thumbnailTypes": [],
@@ -151,7 +158,12 @@ class MercariService(BaseService):
             else:
                 temp["size"] = None
             temp["url"] = "https://jp.mercari.com/item/" + item["id"]
-            temp["img"] = item["thumbnails"]
+            thumbnails = item["thumbnails"]
+            temp["img"] = []
+            for img in thumbnails:
+                temp["img"].append(
+                    img.replace("c!/w=240,f=webp/thumb", "item/detail/orig")
+                )
             cleaned_items_list.append(temp)
 
         item_json = json.dumps(cleaned_items_list)

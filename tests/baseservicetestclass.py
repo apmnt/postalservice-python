@@ -92,3 +92,26 @@ class _BaseServiceTestClass(object):
         # Loop through the items and assert the size is XL
         for i in range(searchresults.count()):
             self.assertTrue(size_to_search in searchresults.get(i)["size"])
+
+    def test_search_pagination(self):
+        # search normal search
+        sparams = SearchParams("comme des garcons", item_count=36)
+        searchresults = asyncio.run(
+            self.service.get_search_results_async(sparams.get_dict())
+        )
+
+        self.logger.info(searchresults)
+
+        # search with pagination, page 2
+        sparams = SearchParams("comme des garcons", item_count=36, page=2)
+        searchresults_page2 = asyncio.run(
+            self.service.get_search_results_async(sparams.get_dict())
+        )
+
+        self.logger.info(searchresults_page2)
+
+        # assert page 2 results have something
+        self.assertTrue(searchresults_page2.count() > 0)
+
+        # assert different results
+        self.assertNotEqual(searchresults.get(0), searchresults_page2.get(0))
