@@ -5,10 +5,10 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="postalservice",
-    version="0.1.1",
+    version="0.1.2",
     author="Aapo Montin",
     description="A package for second hand shopping",
     long_description=long_description,
-    long_description_content_type="text/markdown",  # Specify the content type
+    long_description_content_type="text/markdown",
     packages=find_packages(),
 )
