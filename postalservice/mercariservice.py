@@ -158,7 +158,12 @@ class MercariService(BaseService):
             else:
                 temp["size"] = None
             temp["url"] = "https://jp.mercari.com/item/" + item["id"]
-            temp["img"] = item["thumbnails"]
+            thumbnails = item["thumbnails"]
+            temp["img"] = []
+            for img in thumbnails:
+                temp["img"].append(
+                    img.replace("c!/w=240,f=webp/thumb", "item/detail/orig")
+                )
             cleaned_items_list.append(temp)
 
         item_json = json.dumps(cleaned_items_list)
