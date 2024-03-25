@@ -15,6 +15,26 @@ SIZE_MAP = {
     "L": "4",
     "XL": "5",
 }
+BREANS_MAP = {
+    "JUNYA WATANABE": "1623",
+    "BLACK COMME des GARCONS": "1624",
+    "COMME des GARCONS HOMME": "7319",
+    "COMME des GARCONS HOMME DEUX": "7320",
+    "COMME des GARCONS SHIRT": "7321",
+    "eYe COMME des GARCONS JUNYA WATANABE MAN": "7344",
+    "JUNYA WATANABE COMME des GARCONS": "7389",
+    "JUNYA WATANABE COMME des GARCONS DENIM": "7390",
+    "JUNYA WATANABE COMME des GARCONS MAN": "7391",
+    "tricot COMME des GARCONS": "7529",
+    "COMME des GARCONS HOMME HOMME": "7812",
+    "KAPITAL": "1527",
+    "nanamica": "6185",
+    "noir kei ninomiya": "16960",
+    "goa": "542",
+    "FULLCOUNT": "5602",
+    "WHITESVILLE": "8689",
+    "WAREHOUSE": "281",
+}
 
 
 class MercariService(BaseService):
@@ -37,6 +57,14 @@ class MercariService(BaseService):
         else:
             mapped_size = None
 
+        brands = params.get("brand")
+        print("brands raw")
+        print(brands)
+        if brands is None:
+            brands = []
+        else:
+            brands = [BREANS_MAP.get(brand) for brand in brands]
+
         url = "https://api.mercari.jp/v2/entities:search"
         searchSessionId = "".join(random.choice(CHARACTERS) for i in range(32))
         payload = {
@@ -54,7 +82,7 @@ class MercariService(BaseService):
                 "status": ["STATUS_ON_SALE"],
                 "sizeId": [mapped_size],
                 "categoryId": [],
-                "brandId": [],
+                "brandId": brands,
                 "sellerId": [],
                 "priceMin": 0,
                 "priceMax": 0,
@@ -164,6 +192,8 @@ class MercariService(BaseService):
                 temp["img"].append(
                     img.replace("c!/w=240,f=webp/thumb", "item/detail/orig")
                 )
+            print(item)
+            temp["brand"] = item.get("itemBrand").get("subName")
             cleaned_items_list.append(temp)
 
         item_json = json.dumps(cleaned_items_list)

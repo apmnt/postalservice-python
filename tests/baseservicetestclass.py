@@ -115,3 +115,22 @@ class _BaseServiceTestClass(object):
 
         # assert different results
         self.assertNotEqual(searchresults.get(0), searchresults_page2.get(0))
+
+    def test_search_empty_params(self):
+        sparams = SearchParams("")
+        print(sparams.get_dict())
+        searchresults = asyncio.run(
+            self.service.get_search_results_async(sparams.get_dict())
+        )
+
+        self.assertEqual(searchresults.count(), 10)
+
+    def test_search_by_brand(self):
+        sparams = SearchParams("junya watanabe", brands=["JUNYA WATANABE"])
+        print(sparams.get_dict())
+        searchresults = self.service.get_search_results(sparams.get_dict())
+        print(searchresults.to_json())
+        # Loop through the items and assert the brand is comme des garcons
+        for i in range(searchresults.count()):
+            self.logger.info(searchresults.get(i)["brand"])
+            self.assertTrue("JUNYA WATANABE" in searchresults.get(i)["brand"])

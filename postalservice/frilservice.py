@@ -22,6 +22,10 @@ SIZE_MAP = {
     "XXL": 10009,
 }
 
+BRANDS_MAP = {
+    "JUNYA WATANABE": "4433",
+}
+
 
 class FrilService(BaseService):
 
@@ -65,6 +69,7 @@ class FrilService(BaseService):
             temp["url"] = item.select_one(".link_search_image")["href"]
             temp["img"] = ["IMG PLACEHOLDER"]
             temp["size"] = "SIZE PLACEHOLDER"
+            temp["brand"] = "BRAND PLACEHOLDER"
             cleaned_items_list.append(temp)
         return cleaned_items_list
 
@@ -104,6 +109,7 @@ class FrilService(BaseService):
         tr_rows = soup.find_all("tr")
         if len(tr_rows) > 1:
             details["size"] = tr_rows[1].td.text
+            details["brand"] = tr_rows[2].td.text.replace("\n", "")
 
         sp_slides = soup.find_all("div", class_="sp-slide")
         if len(sp_slides) > 0:
@@ -130,5 +136,12 @@ class FrilService(BaseService):
         page = params.get("page")
         if "page" in params and page is not None:
             url += f"&page={page}"
+
+        brands = params.get("brand")
+        if "brand" in params and brands is not None and len(brands) > 0:
+            if brands[0] not in BRANDS_MAP:
+                raise ValueError(f"Brand {brands[0]} is not supported")
+            brand_id = BRANDS_MAP[brands[0]]
+            url += f"&brand_id={brand_id}"
 
         return url

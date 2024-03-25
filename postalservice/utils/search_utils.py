@@ -1,6 +1,7 @@
 import json
 import typing
 
+
 class SearchParams:
     def __init__(self, search_params: dict):
         # Check that the search_params has the required keys
@@ -45,6 +46,7 @@ class SearchResults:
     id -> string
     title -> string
     price -> float
+    brand -> string
     size -> string
     url -> string
     img -> list of string
@@ -57,7 +59,9 @@ class SearchResults:
             raise ValueError("Invalid JSON string")
 
         for result in results:
-            if not all(key in result for key in ["id", "title", "price", "size", "url", "img"]):
+            if not all(
+                key in result for key in ["id", "title", "price", "size", "url", "img"]
+            ):
                 raise ValueError("Missing expected key in result, ", result)
             if not isinstance(result["id"], str):
                 raise ValueError(f"id must be a string, not {type(result['id'])}")
@@ -65,13 +69,21 @@ class SearchResults:
                 raise ValueError(f"title must be a string, not {type(result['title'])}")
             if not isinstance(result["price"], float):
                 raise ValueError(f"price must be a float, not {type(result['price'])}")
+            if not isinstance(result["brand"], str):
+                raise ValueError(f"brand must be a string, not {type(result['brand'])}")
             if result["size"]:
                 if not isinstance(result["size"], str):
-                    raise ValueError(f"size must be a string, not {type(result['size'])}")
+                    raise ValueError(
+                        f"size must be a string, not {type(result['size'])}"
+                    )
             if not isinstance(result["url"], str):
                 raise ValueError(f"url must be a string, not {type(result['url'])}")
-            if not isinstance(result["img"], list) or not all(isinstance(i, str) for i in result["img"]):
-                raise ValueError(f"img must be a list of strings, not {type(result['img'])}")
+            if not isinstance(result["img"], list) or not all(
+                isinstance(i, str) for i in result["img"]
+            ):
+                raise ValueError(
+                    f"img must be a list of strings, not {type(result['img'])}"
+                )
 
         self.results: list = results
 
@@ -84,13 +96,13 @@ class SearchResults:
             return self.results[index]
         except IndexError:
             return {}
-    
+
     def to_json(self) -> str:
         """
         Returns the search results as a JSON string.
         """
         return json.dumps(self.results)
-    
+
     def to_list(self) -> list:
         """
         Returns the search results as a list of dictionaries.
