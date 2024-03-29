@@ -24,6 +24,21 @@ SIZE_MAP = {
 
 BRANDS_MAP = {
     "JUNYA WATANABE": "4433",
+    "JUNYA WATANABE MAN": "12400",
+    "BLACK COMME des GARCONS": "5454",
+    "COMME des GARCONS HOMME": "16922",
+    "COMME des GARCONS HOMME DEUX": "16918",
+    "COMME des GARCONS SHIRT": "16920",
+    "JUNYA WATANABE COMME des GARCONS": "5420",
+    "tricot COMME des GARCONS": "16921",
+    "KAPITAL": "1785",
+    "nanamica": "3393",
+    "noir kei ninomiya": "12388",
+    "goa": "321",
+    "FULLCOUNT": "2651",
+    "WHITESVILLE": "9493",
+    "WAREHOUSE": "4290",
+    "takahiro miyashita the soloist": "8964",
 }
 
 
