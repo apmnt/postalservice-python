@@ -10,21 +10,22 @@ from .utils.search_utils import SearchParams
 CHARACTERS = string.ascii_lowercase + string.digits
 
 SIZE_MAP = {
+    "FREE / ONESIZE": "7",
+    "XS": "154",
     "S": "2",
     "M": "3",
     "L": "4",
     "XL": "5",
+    "XXL": "155",
 }
 BREANS_MAP = {
     "JUNYA WATANABE": "1623",
+    "JUNYA WATANABE MAN": "15429",
     "BLACK COMME des GARCONS": "1624",
     "COMME des GARCONS HOMME": "7319",
     "COMME des GARCONS HOMME DEUX": "7320",
     "COMME des GARCONS SHIRT": "7321",
-    "eYe COMME des GARCONS JUNYA WATANABE MAN": "7344",
     "JUNYA WATANABE COMME des GARCONS": "7389",
-    "JUNYA WATANABE COMME des GARCONS DENIM": "7390",
-    "JUNYA WATANABE COMME des GARCONS MAN": "7391",
     "tricot COMME des GARCONS": "7529",
     "COMME des GARCONS HOMME HOMME": "7812",
     "KAPITAL": "1527",
@@ -34,6 +35,7 @@ BREANS_MAP = {
     "FULLCOUNT": "5602",
     "WHITESVILLE": "8689",
     "WAREHOUSE": "281",
+    "takahiro miyashita the soloist": "14631",
 }
 
 
