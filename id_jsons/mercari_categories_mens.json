@@ -6,9 +6,5 @@
   { "id": 34, "name": "bags" },
   { "id": 36, "name": "hats" },
   { "id": 38, "name": "accessories" },
-  { "id": 37, "name": "jewelry" },
-  { "id": 39, "name": "watches" },
-  { "id": 35, "name": "suits" },
-  { "id": 42, "name": "underwear" },
-  { "id": 41, "name": "legwear" }
+  { "id": 37, "name": "jewelry" }
 ]

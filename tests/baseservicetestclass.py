@@ -134,3 +134,14 @@ class _BaseServiceTestClass(object):
         for i in range(searchresults.count()):
             self.logger.info(searchresults.get(i)["brand"])
             self.assertTrue("JUNYA WATANABE" in searchresults.get(i)["brand"])
+
+    def test_search_by_category(self):
+        sparams = SearchParams("comme des garcons", category=["accessories"])
+        print(sparams.get_dict())
+        searchresults = asyncio.run(
+            self.service.get_search_results_async(sparams.get_dict())
+        )
+        print(searchresults.to_json())
+        # Loop through the items and assert the category is shirts (manually)
+        for i in range(searchresults.count()):
+            self.logger.info(searchresults.get(i))

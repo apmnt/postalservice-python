@@ -41,6 +41,17 @@ BRANDS_MAP = {
     "takahiro miyashita the soloist": "8964",
 }
 
+CATEGORIES_MAP = {
+    "tops": 526,
+    "outerwear": 539,
+    "pants": 562,
+    "shoes": 572,
+    "bags": 580,
+    "hats": 598,
+    "accessories": 614,
+    "jewelry": 606,
+}
+
 
 class FrilService(BaseService):
 
@@ -158,5 +169,12 @@ class FrilService(BaseService):
                 raise ValueError(f"Brand {brands[0]} is not supported")
             brand_id = BRANDS_MAP[brands[0]]
             url += f"&brand_id={brand_id}"
+
+        categories = params.get("category")
+        if "category" in params and categories is not None and len(categories) > 0:
+            if categories[0] not in CATEGORIES_MAP:
+                raise ValueError(f"Category {categories[0]} is not supported")
+            category_id = CATEGORIES_MAP[categories[0]]
+            url += f"&category_id={category_id}"
 
         return url

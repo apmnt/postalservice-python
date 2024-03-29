@@ -18,7 +18,8 @@ SIZE_MAP = {
     "XL": "5",
     "XXL": "155",
 }
-BREANS_MAP = {
+
+BRANDS_MAP = {
     "JUNYA WATANABE": "1623",
     "JUNYA WATANABE MAN": "15429",
     "BLACK COMME des GARCONS": "1624",
@@ -36,6 +37,17 @@ BREANS_MAP = {
     "WHITESVILLE": "8689",
     "WAREHOUSE": "281",
     "takahiro miyashita the soloist": "14631",
+}
+
+CATEGORIES_MAP = {
+    "tops": "30",
+    "outerwear": "31",
+    "pants": "32",
+    "shoes": "33",
+    "bags": "34",
+    "hats": "36",
+    "accessories": "38",
+    "jewelry": "37",
 }
 
 
@@ -60,12 +72,18 @@ class MercariService(BaseService):
             mapped_size = None
 
         brands = params.get("brand")
-        print("brands raw")
-        print(brands)
         if brands is None:
             brands = []
         else:
-            brands = [BREANS_MAP.get(brand) for brand in brands]
+            brands = [BRANDS_MAP.get(brand) for brand in brands]
+
+        categories_str = params.get("category")
+        if categories_str is not None:
+            categories_ids = [
+                CATEGORIES_MAP.get(category) for category in categories_str
+            ]
+        else:
+            categories_ids = []
 
         url = "https://api.mercari.jp/v2/entities:search"
         searchSessionId = "".join(random.choice(CHARACTERS) for i in range(32))
@@ -83,7 +101,7 @@ class MercariService(BaseService):
                 "order": "ORDER_DESC",
                 "status": ["STATUS_ON_SALE"],
                 "sizeId": [mapped_size],
-                "categoryId": [],
+                "categoryId": categories_ids,
                 "brandId": brands,
                 "sellerId": [],
                 "priceMin": 0,
