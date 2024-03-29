@@ -1,0 +1,14 @@
+[
+  { "id": 30, "name": "tops" },
+  { "id": 31, "name": "outerwear" },
+  { "id": 32, "name": "pants" },
+  { "id": 33, "name": "shoes" },
+  { "id": 34, "name": "bags" },
+  { "id": 36, "name": "hats" },
+  { "id": 38, "name": "accessories" },
+  { "id": 37, "name": "jewelry" },
+  { "id": 39, "name": "watches" },
+  { "id": 35, "name": "suits" },
+  { "id": 42, "name": "underwear" },
+  { "id": 41, "name": "legwear" }
+]
