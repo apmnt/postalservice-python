@@ -10,10 +10,32 @@ from .utils.search_utils import SearchParams
 CHARACTERS = string.ascii_lowercase + string.digits
 
 SIZE_MAP = {
+    "FREE / ONESIZE": "7",
+    "XS": "154",
     "S": "2",
     "M": "3",
     "L": "4",
     "XL": "5",
+    "XXL": "155",
+}
+BREANS_MAP = {
+    "JUNYA WATANABE": "1623",
+    "JUNYA WATANABE MAN": "15429",
+    "BLACK COMME des GARCONS": "1624",
+    "COMME des GARCONS HOMME": "7319",
+    "COMME des GARCONS HOMME DEUX": "7320",
+    "COMME des GARCONS SHIRT": "7321",
+    "JUNYA WATANABE COMME des GARCONS": "7389",
+    "tricot COMME des GARCONS": "7529",
+    "COMME des GARCONS HOMME HOMME": "7812",
+    "KAPITAL": "1527",
+    "nanamica": "6185",
+    "noir kei ninomiya": "16960",
+    "goa": "542",
+    "FULLCOUNT": "5602",
+    "WHITESVILLE": "8689",
+    "WAREHOUSE": "281",
+    "takahiro miyashita the soloist": "14631",
 }
 
 
@@ -37,6 +59,14 @@ class MercariService(BaseService):
         else:
             mapped_size = None
 
+        brands = params.get("brand")
+        print("brands raw")
+        print(brands)
+        if brands is None:
+            brands = []
+        else:
+            brands = [BREANS_MAP.get(brand) for brand in brands]
+
         url = "https://api.mercari.jp/v2/entities:search"
         searchSessionId = "".join(random.choice(CHARACTERS) for i in range(32))
         payload = {
@@ -54,7 +84,7 @@ class MercariService(BaseService):
                 "status": ["STATUS_ON_SALE"],
                 "sizeId": [mapped_size],
                 "categoryId": [],
-                "brandId": [],
+                "brandId": brands,
                 "sellerId": [],
                 "priceMin": 0,
                 "priceMax": 0,
@@ -164,6 +194,11 @@ class MercariService(BaseService):
                 temp["img"].append(
                     img.replace("c!/w=240,f=webp/thumb", "item/detail/orig")
                 )
+            print(item)
+            if item.get("itemBrand") is not None:
+                temp["brand"] = item.get("itemBrand").get("subName")
+            else:
+                temp["brand"] = "--"
             cleaned_items_list.append(temp)
 
         item_json = json.dumps(cleaned_items_list)
