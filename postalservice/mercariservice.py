@@ -195,7 +195,10 @@ class MercariService(BaseService):
                     img.replace("c!/w=240,f=webp/thumb", "item/detail/orig")
                 )
             print(item)
-            temp["brand"] = item.get("itemBrand").get("subName")
+            if item.get("itemBrand") is not None:
+                temp["brand"] = item.get("itemBrand").get("subName")
+            else:
+                temp["brand"] = "--"
             cleaned_items_list.append(temp)
 
         item_json = json.dumps(cleaned_items_list)
