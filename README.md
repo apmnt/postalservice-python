@@ -1,6 +1,7 @@
 # Postal Service Python Library
 [![Mercari](https://github.com/apmnt/postalservice_python/actions/workflows/mercari_tests.yml/badge.svg)](https://github.com/apmnt/postalservice_python/actions/workflows/mercari_tests.yml)
 [![Fril](https://github.com/apmnt/postalservice_python/actions/workflows/fril_tests.yml/badge.svg)](https://github.com/apmnt/postalservice_python/actions/workflows/fril_tests.yml)
+[![YJP](https://github.com/apmnt/postalservice_python/actions/workflows/yjp_tests.yml/badge.svg)](https://github.com/apmnt/postalservice_python/actions/workflows/yjp_tests.yml)
 [![PyPI version](https://badge.fury.io/py/postalservice.svg)](https://badge.fury.io/py/postalservice)
 
 Python library for scraping second hand Japanese websites for easier access to the search results. Useful for creating datasets, notification systems, or web APIs. Targets the website API if available, or parses the HTML response.
@@ -57,7 +58,6 @@ Output:
 - `get_search_results_async(params: dict) -> SearchResults`: Fetches data asynchronously using the provided parameters, parses the response (asynchronously, if needed), and returns the results as SearchResults object. 
 
 ## todo
-- YJP support
-- Filter by brand
+- Rakuten support
 - General improvements to structure of the library
-- Support for getting intermediate/temporary results for slow sites like Fril
+- Support for multiple sizes for sites where only one size is possible to select at a time
