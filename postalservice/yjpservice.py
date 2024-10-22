@@ -93,7 +93,7 @@ class YJPService(BaseService):
             price_string = item.select_one(".Product__price").text
             temp["price"] = float(re.sub(r"[^\d.]", "", price_string))
             temp["img"] = ["IMG PLACEHOLDER"]
-            temp["size"] = "SIZE PLACEHOLDER"
+            temp["size"] = "no size"
             temp["brand"] = "BRAND PLACEHOLDER"
             cleaned_items_list.append(temp)
         return cleaned_items_list
@@ -138,13 +138,17 @@ class YJPService(BaseService):
                     details["size"] = tr.td.text.replace("\n", "").replace(" ", "")
                     break
             for tr in tr_rows:
-                if tr.text.replace("\n", "").replace(" ", "").startswith("メーカー・ブランド"):
+                if (
+                    tr.text.replace("\n", "")
+                    .replace(" ", "")
+                    .startswith("メーカー・ブランド")
+                ):
                     details["brand"] = tr.td.text.replace("\n", "").replace(" ", "")
-                    break              
+                    break
 
-        images = soup.select(".ProductImage__images")
+        images = soup.select(".ProductImage__images img")
         if len(images) > 0:
-            details["img"] = [images[0].img["src"]]
+            details["img"] = [img["src"] for img in images]
         return details
 
     def get_search_params(self, params: dict) -> str:
