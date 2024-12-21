@@ -1,7 +1,6 @@
 import asyncio
 from pathlib import Path
 import pytest
-import pytest
 import httpx
 import logging
 from unittest.mock import Mock, patch, AsyncMock
@@ -120,9 +119,7 @@ async def test_parse_results_async(
 
 @pytest.mark.parametrize("service_fixture", ["mercari_service"])
 @patch("postalservice.mercariservice.MercariService.fetch_data", new_callable=Mock)
-def test_get_results(
-    mock_fetch_data, logger, request, service_fixture, mock_response
-):
+def test_get_results(mock_fetch_data, logger, request, service_fixture, mock_response):
     service = request.getfixturevalue(service_fixture)
     mock_fetch_data.return_value = mock_response
     res = service.fetch_data()

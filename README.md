@@ -1,7 +1,5 @@
 # Postal Service Python Library
-[![Mercari](https://github.com/apmnt/postalservice_python/actions/workflows/mercari_tests.yml/badge.svg)](https://github.com/apmnt/postalservice_python/actions/workflows/mercari_tests.yml)
-[![Fril](https://github.com/apmnt/postalservice_python/actions/workflows/fril_tests.yml/badge.svg)](https://github.com/apmnt/postalservice_python/actions/workflows/fril_tests.yml)
-[![YJP](https://github.com/apmnt/postalservice_python/actions/workflows/yjp_tests.yml/badge.svg)](https://github.com/apmnt/postalservice_python/actions/workflows/yjp_tests.yml)
+
 [![PyPI version](https://badge.fury.io/py/postalservice.svg)](https://badge.fury.io/py/postalservice)
 
 Python library for scraping second hand Japanese websites for easier access to the search results. Useful for creating datasets, notification systems, or web APIs. Targets the website API if available, or parses the HTML response.
@@ -14,7 +12,9 @@ Python library for scraping second hand Japanese websites for easier access to t
 - Unit tested locally and with Github Actions workflow
 
 ## Installation
+
 postalservice is available on PyPI as `postalservice`
+
 ```
 pip install postalservice
 ```
@@ -32,7 +32,9 @@ searchresults = mercari.get_search_results({'keyword':'comme des garcons', 'size
 # When you print the `SearchResults` object, it outputs a well-formatted JSON string
 print(searchresults)
 ```
+
 Output:
+
 ```json
 [
     {
@@ -55,9 +57,10 @@ Output:
 
 - `get_search_results(params: dict) -> SearchResults`: Fetches data synchronously using the provided parameters, parses the response, and returns the results as SearchResults object.
 
-- `get_search_results_async(params: dict) -> SearchResults`: Fetches data asynchronously using the provided parameters, parses the response (asynchronously, if needed), and returns the results as SearchResults object. 
+- `get_search_results_async(params: dict) -> SearchResults`: Fetches data asynchronously using the provided parameters, parses the response (asynchronously, if needed), and returns the results as SearchResults object.
 
 ## todo
+
 - Rakuten support
 - General improvements to structure of the library
 - Support for multiple sizes for sites where only one size is possible to select at a time
