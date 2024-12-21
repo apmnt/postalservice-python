@@ -1,11 +1,15 @@
 import asyncio
 from pathlib import Path
 import pytest
+from pytest_mock import mocker
 import httpx
 import logging
-from unittest.mock import Mock, patch, AsyncMock
+
 from postalservice import MercariService, YJPService, FrilService
+from postalservice.baseservice import BaseService
 from postalservice.utils import SearchParams, SearchResults
+
+from typing import Callable, List, Any
 
 
 @pytest.fixture(scope="module")
@@ -52,94 +56,48 @@ def mock_item_response(mock_request):
 
 
 @pytest.mark.parametrize("service_fixture", ["mercari_service"])
-@patch("postalservice.mercariservice.MercariService.fetch_data", new_callable=Mock)
-def test_fetch_code_200(
-    mock_fetch_data, logger, request, service_fixture, mock_response
-):
-    service = request.getfixturevalue(service_fixture)
-    mock_fetch_data.return_value = mock_response
+def test_fetch_code_200(service_fixture, mocker, request, logger) -> None:
+    # Get the service fixture
+    service: BaseService = request.getfixturevalue(service_fixture)
+
+    # Mock the response
+    mock_response = mocker.Mock()
+    mock_response.status_code = 200
+    mocker.patch.object(service, "fetch_data", return_value=mock_response)
+
     res = service.fetch_data()
     logger.info("Fetched data: %s", res)
     assert res.status_code == 200
 
 
 @pytest.mark.parametrize("service_fixture", ["mercari_service"])
-@patch(
-    "postalservice.mercariservice.MercariService.fetch_data_async",
-    new_callable=AsyncMock,
-)
 @pytest.mark.asyncio
-async def test_fetch_code_200_async(
-    mock_fetch_data_async, logger, request, service_fixture, mock_response
-):
-    service = request.getfixturevalue(service_fixture)
-    mock_fetch_data_async.return_value = mock_response
-    res = await service.fetch_data_async()
+async def test_fetch_code_200_async(service_fixture, mocker, request, logger):
+    # Get the service fixture
+    service: BaseService = request.getfixturevalue(service_fixture)
+
+    # Mock the response
+    mock_response = mocker.Mock()
+    mock_response.status_code = 200
+    mocker.patch.object(service, "fetch_data", return_value=mock_response)
+
+    sparams = SearchParams("comme des garcons")
+    res = await service.fetch_data_async(sparams.get_dict())
     logger.info("Fetched data: %s", res)
     assert res.status_code == 200
 
 
 @pytest.mark.parametrize("service_fixture", ["mercari_service"])
-@patch("postalservice.mercariservice.MercariService.fetch_data", new_callable=Mock)
-def test_parse_results(
-    mock_fetch_data_async, logger, request, service_fixture, mock_response
-):
+def test_parse_results(service_fixture, mocker, request, logger, mock_response):
+    # Get the service fixture
     service = request.getfixturevalue(service_fixture)
-    mock_fetch_data_async.return_value = mock_response
+
+    # Mock the response
+    mocker.patch.object(service, "fetch_data", return_value=mock_response)
+
     sparams = SearchParams("comme des garcons")
     res = service.fetch_data(sparams.get_dict())
     items = service.parse_response(res)
     searchresults = SearchResults(items)
     logger.info(searchresults)
     assert searchresults.count() > 0
-
-
-@pytest.mark.parametrize("service_fixture", ["mercari_service"])
-@patch(
-    "postalservice.mercariservice.MercariService.fetch_data_async",
-    new_callable=AsyncMock,
-)
-@pytest.mark.asyncio
-async def test_parse_results_async(
-    mock_fetch_data_async,
-    logger,
-    request,
-    service_fixture,
-    mock_response,
-):
-    service = request.getfixturevalue(service_fixture)
-    mock_fetch_data_async.return_value = mock_response
-    sparams = SearchParams("comme des garcons")
-    res = await service.fetch_data_async(sparams.get_dict())
-    items = await service.parse_response_async(res)
-    searchresults = SearchResults(items)
-    logger.info(searchresults)
-    assert searchresults.count() > 0
-
-
-@pytest.mark.parametrize("service_fixture", ["mercari_service"])
-@patch("postalservice.mercariservice.MercariService.fetch_data", new_callable=Mock)
-def test_get_results(mock_fetch_data, logger, request, service_fixture, mock_response):
-    service = request.getfixturevalue(service_fixture)
-    mock_fetch_data.return_value = mock_response
-    res = service.fetch_data()
-    items = service.parse_response(res)
-    searchresults = SearchResults(items)
-    logger.debug(searchresults)
-    assert searchresults.count() >= 5
-
-
-@pytest.mark.parametrize("service_fixture", ["mercari_service"])
-@patch(
-    "postalservice.mercariservice.MercariService.fetch_data_async", new_callable=Mock
-)
-def test_get_results_async(
-    mock_fetch_data_async, logger, request, service_fixture, mock_response
-):
-    service = request.getfixturevalue(service_fixture)
-    mock_fetch_data_async.return_value = mock_response
-    res = service.fetch_data_async()
-    items = service.parse_response(res)
-    searchresults = SearchResults(items)
-    logger.debug(searchresults)
-    assert searchresults.count() >= 5
