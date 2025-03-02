@@ -36,17 +36,23 @@ SERVICE_LIST = ["mercari_service", "fril_service", "yjp_service"]
 
 
 @pytest.mark.parametrize("service_fixture", SERVICE_LIST)
-def test_fetch_code_200(service_fixture, request, logger) -> None:
+def test_fetch_code_200(
+    service_fixture: str, request: pytest.FixtureRequest, logger: logging.Logger
+) -> None:
     # Get the service fixture
     service: BaseService = request.getfixturevalue(service_fixture)
+
     sparams = create_search_params("junya", item_count=1)
     res = service.fetch_data(sparams)
     logger.info("Fetched data: %s", res)
+
     assert res.status_code == 200
 
 
 @pytest.mark.parametrize("service_fixture", SERVICE_LIST)
-def test_parse_results(service_fixture, request, logger):
+def test_parse_results(
+    service_fixture: str, request: pytest.FixtureRequest, logger: logging.Logger
+):
     # Get the service fixture
     service = request.getfixturevalue(service_fixture)
 
@@ -55,17 +61,21 @@ def test_parse_results(service_fixture, request, logger):
     items = service.parse_response(res)
     searchresults = SearchResults(items)
     logger.info(searchresults)
+
     assert searchresults.count() == 1
 
 
 @pytest.mark.parametrize("service_fixture", SERVICE_LIST)
-def test_get_search_results(service_fixture, request, logger):
+def test_get_search_results(
+    service_fixture: str, request: pytest.FixtureRequest, logger: logging.Logger
+):
     # Get the service fixture
     service = request.getfixturevalue(service_fixture)
 
     sparams = create_search_params("junya", item_count=1)
     searchresults = service.get_search_results(sparams)
     logger.info(searchresults)
+
     assert searchresults.count() == 1
 
 
@@ -74,18 +84,24 @@ def test_get_search_results(service_fixture, request, logger):
 
 @pytest.mark.parametrize("service_fixture", SERVICE_LIST)
 @pytest.mark.asyncio
-async def test_async_fetch_code_200(service_fixture, request, logger):
+async def test_async_fetch_code_200(
+    service_fixture: str, request: pytest.FixtureRequest, logger: logging.Logger
+):
     # Get the service fixture
     service: BaseService = request.getfixturevalue(service_fixture)
+
     sparams = create_search_params("junya", item_count=1)
     res = await service.fetch_data_async(sparams)
     logger.info("Fetched data: %s", res)
+
     assert res.status_code == 200
 
 
 @pytest.mark.parametrize("service_fixture", SERVICE_LIST)
 @pytest.mark.asyncio
-async def test_async_parse_results(service_fixture, request, logger):
+async def test_async_parse_results(
+    service_fixture: str, request: pytest.FixtureRequest, logger: logging.Logger
+):
     # Get the service fixture
     service = request.getfixturevalue(service_fixture)
 
@@ -94,16 +110,20 @@ async def test_async_parse_results(service_fixture, request, logger):
     items = await service.parse_response_async(res)
     searchresults = SearchResults(items)
     logger.info(searchresults)
-    assert searchresults.count() > 0
+
+    assert searchresults.count() == 1
 
 
 @pytest.mark.parametrize("service_fixture", SERVICE_LIST)
 @pytest.mark.asyncio
-async def test_async_get_search_results(service_fixture, request, logger):
+async def test_async_get_search_results(
+    service_fixture: str, request: pytest.FixtureRequest, logger: logging.Logger
+):
     # Get the service fixture
     service = request.getfixturevalue(service_fixture)
 
     sparams = create_search_params("junya", item_count=1)
     searchresults = await service.get_search_results_async(sparams)
     logger.info(searchresults)
-    assert searchresults.count() > 0
+
+    assert searchresults.count() == 1
