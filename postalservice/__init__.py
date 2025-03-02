@@ -26,7 +26,6 @@ def create_search_params(
         dict: A dictionary containing the search parameters.
 
     """
-    # You can either call a modified version of SearchParams or build the dictionary directly.
     return {
         "size": size,
         "keyword": keyword,
