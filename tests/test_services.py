@@ -2,7 +2,7 @@ import pytest
 import logging
 from postalservice import MercariService, YJPService, FrilService, create_search_params
 from postalservice.baseservice import BaseService
-from postalservice.utils import SearchParams, SearchResults
+from postalservice.utils import SearchResults
 
 
 @pytest.fixture(scope="module")
