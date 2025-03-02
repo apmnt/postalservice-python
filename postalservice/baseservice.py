@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 import asyncio
 import json
 import httpx
-from postalservice.utils.search_utils import SearchParams, SearchResults
+from postalservice.utils.search_utils import SearchResults
+
 
 class BaseService(ABC):
     @abstractmethod
@@ -30,7 +31,7 @@ class BaseService(ABC):
         items = await self.parse_response_async(res)
         searchresults = SearchResults(items)
         return searchresults
-    
+
     def get_search_results(self, params: dict) -> SearchResults:
         res = self.fetch_data(params)
         items = self.parse_response(res)
