@@ -1,42 +1,4 @@
 import json
-import typing
-
-
-class SearchParams:
-    def __init__(self, search_params: dict):
-        # Check that the search_params has the required keys
-        if not all(
-            key in search_params
-            for key in ["size", "keyword", "category", "brand", "item_count", "page"]
-        ):
-            raise KeyError(
-                "search_params must contain the following keys: size, keyword, category, brand, item_count, page"
-            )
-        self.search_params = search_params
-
-    def __init__(
-        self,
-        keyword: str,
-        size: typing.Optional[str] = None,
-        category: typing.Optional[str] = None,
-        brands: typing.Optional[list] = None,
-        item_count: typing.Optional[int] = 10,
-        page: typing.Optional[int] = 0,
-    ):
-        self.search_params = {
-            "size": size,
-            "keyword": keyword,
-            "category": category,
-            "brand": brands,
-            "item_count": item_count,
-            "page": page,
-        }
-
-    def get_size(self):
-        return self.search_params.get("size")
-
-    def get_dict(self):
-        return self.search_params
 
 
 class SearchResults:

@@ -1,6 +1,6 @@
 import pytest
 import logging
-from postalservice import MercariService, YJPService, FrilService
+from postalservice import MercariService, YJPService, FrilService, create_search_params
 from postalservice.baseservice import BaseService
 from postalservice.utils import SearchParams, SearchResults
 
@@ -39,8 +39,8 @@ SERVICE_LIST = ["mercari_service", "fril_service", "yjp_service"]
 def test_fetch_code_200(service_fixture, request, logger) -> None:
     # Get the service fixture
     service: BaseService = request.getfixturevalue(service_fixture)
-    params = SearchParams("comme des garcons")
-    res = service.fetch_data(params.get_dict())
+    sparams = create_search_params("junya", item_count=1)
+    res = service.fetch_data(sparams)
     logger.info("Fetched data: %s", res)
     assert res.status_code == 200
 
@@ -50,12 +50,12 @@ def test_parse_results(service_fixture, request, logger):
     # Get the service fixture
     service = request.getfixturevalue(service_fixture)
 
-    sparams = SearchParams("comme des garcons")
-    res = service.fetch_data(sparams.get_dict())
+    sparams = create_search_params("junya", item_count=1)
+    res = service.fetch_data(sparams)
     items = service.parse_response(res)
     searchresults = SearchResults(items)
     logger.info(searchresults)
-    assert searchresults.count() > 0
+    assert searchresults.count() == 1
 
 
 @pytest.mark.parametrize("service_fixture", SERVICE_LIST)
@@ -63,10 +63,10 @@ def test_get_search_results(service_fixture, request, logger):
     # Get the service fixture
     service = request.getfixturevalue(service_fixture)
 
-    sparams = SearchParams("comme des garcons")
-    searchresults = service.get_search_results(sparams.get_dict())
+    sparams = create_search_params("junya", item_count=1)
+    searchresults = service.get_search_results(sparams)
     logger.info(searchresults)
-    assert searchresults.count() > 0
+    assert searchresults.count() == 1
 
 
 # ----- ASYNC TESTS -----
@@ -77,8 +77,8 @@ def test_get_search_results(service_fixture, request, logger):
 async def test_async_fetch_code_200(service_fixture, request, logger):
     # Get the service fixture
     service: BaseService = request.getfixturevalue(service_fixture)
-    params = SearchParams("comme des garcons")
-    res = await service.fetch_data_async(params.get_dict())
+    sparams = create_search_params("junya", item_count=1)
+    res = await service.fetch_data_async(sparams)
     logger.info("Fetched data: %s", res)
     assert res.status_code == 200
 
@@ -89,8 +89,8 @@ async def test_async_parse_results(service_fixture, request, logger):
     # Get the service fixture
     service = request.getfixturevalue(service_fixture)
 
-    sparams = SearchParams("comme des garcons")
-    res = await service.fetch_data_async(sparams.get_dict())
+    sparams = create_search_params("junya", item_count=1)
+    res = await service.fetch_data_async(sparams)
     items = await service.parse_response_async(res)
     searchresults = SearchResults(items)
     logger.info(searchresults)
@@ -103,7 +103,7 @@ async def test_async_get_search_results(service_fixture, request, logger):
     # Get the service fixture
     service = request.getfixturevalue(service_fixture)
 
-    sparams = SearchParams("comme des garcons")
-    searchresults = await service.get_search_results_async(sparams.get_dict())
+    sparams = create_search_params("junya", item_count=1)
+    searchresults = await service.get_search_results_async(sparams)
     logger.info(searchresults)
     assert searchresults.count() > 0
