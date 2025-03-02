@@ -155,7 +155,7 @@ class YJPService(BaseService):
 
         url = "https://auctions.yahoo.co.jp/search/search?&fixed=1&s1=new&n=50"
 
-        if "keyword" in params and params["keyword"] is not "":
+        if "keyword" in params and params["keyword"] != "":
             keyword = params["keyword"].replace(" ", "%20")
             url += f"&p={keyword}"
         else:
