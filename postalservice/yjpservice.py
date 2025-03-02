@@ -7,7 +7,6 @@ import bs4
 import httpx
 from .baseservice import BaseService
 from .utils.network_utils import fetch_async
-from .utils.search_utils import SearchParams
 
 CHARACTERS = string.ascii_lowercase + string.digits
 

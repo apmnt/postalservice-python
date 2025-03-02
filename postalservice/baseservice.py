@@ -25,12 +25,6 @@ class BaseService(ABC):
 
         pass
 
-
-    @abstractmethod
-    def get_search_params(self, data: SearchParams) -> str:
-
-        pass
-
     async def get_search_results_async(self, params: dict) -> SearchResults:
         res = await self.fetch_data_async(params)
         items = await self.parse_response_async(res)

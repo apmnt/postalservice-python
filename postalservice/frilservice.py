@@ -4,7 +4,6 @@ import string
 import httpx
 import bs4
 from .baseservice import BaseService
-from .utils.search_utils import SearchParams
 from .utils.network_utils import fetch_async
 import re
 import asyncio

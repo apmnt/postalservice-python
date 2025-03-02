@@ -5,7 +5,6 @@ import string
 import httpx
 from .baseservice import BaseService
 from .utils.network_utils import get_pop_jwt
-from .utils.search_utils import SearchParams
 
 CHARACTERS = string.ascii_lowercase + string.digits
 
@@ -206,6 +205,3 @@ class MercariService(BaseService):
 
     async def parse_response_async(self, response: httpx.Response) -> str:
         return self.parse_response(response)
-
-    def get_search_params(self, data: SearchParams) -> str:
-        return ""

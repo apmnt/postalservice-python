@@ -1,1 +1,1 @@
-from .search_utils import SearchParams, SearchResults
+from .search_utils import SearchResults
