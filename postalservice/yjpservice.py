@@ -91,9 +91,9 @@ class YJPService(BaseService):
             temp["title"] = item.select_one(".Product__title").text
             price_string = item.select_one(".Product__price").text
             temp["price"] = float(re.sub(r"[^\d.]", "", price_string))
-            temp["img"] = ["IMG PLACEHOLDER"]
+            temp["img"] = ["IMAGE_PLACEHOLDER"]
             temp["size"] = "no size"
-            temp["brand"] = "BRAND PLACEHOLDER"
+            temp["brand"] = "BRAND_PLACEHOLDER"
             cleaned_items_list.append(temp)
         return cleaned_items_list
 
@@ -145,9 +145,27 @@ class YJPService(BaseService):
                     details["brand"] = tr.td.text.replace("\n", "").replace(" ", "")
                     break
 
-        images = soup.select(".ProductImage__images img")
-        if len(images) > 0:
-            details["img"] = [img["src"] for img in images]
+        # First try to find images in the slick-track carousel structure
+        slick_track = soup.select_one(".slick-track")
+        if slick_track:
+            images = []
+            # Get all images from the slick-track, avoiding duplicates
+            seen_urls = set()
+            for img in slick_track.select("img"):
+                img_url = img.get("src")
+                if img_url and img_url not in seen_urls:
+                    images.append(img_url)
+                    seen_urls.add(img_url)
+            if images:
+                details["img"] = images
+        # If no slick-track or no images found, try another method
+        else:
+            images = soup.select(".ProductImage__images img")
+            if len(images) > 0:
+                details["img"] = [img["src"] for img in images]
+            else:
+                print("No images found in the response: ", soup)
+
         return details
 
     def get_search_params(self, params: dict) -> str:
