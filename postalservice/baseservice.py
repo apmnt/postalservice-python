@@ -6,34 +6,36 @@ from postalservice.utils.search_utils import SearchResults
 
 
 class BaseService(ABC):
+    @staticmethod
     @abstractmethod
-    def fetch_data(self, params: dict) -> httpx.Response:
-
+    def fetch_data(params: dict) -> httpx.Response:
         pass
 
+    @staticmethod
     @abstractmethod
-    async def fetch_data_async(self, params: dict) -> httpx.Response:
-
+    async def fetch_data_async(params: dict) -> httpx.Response:
         pass
 
+    @staticmethod
     @abstractmethod
-    def parse_response(self, response: str) -> str:
-
+    def parse_response(response: httpx.Response, **kwargs) -> str:
         pass
 
+    @staticmethod
     @abstractmethod
-    async def parse_response_async(self, response: str) -> str:
-
+    async def parse_response_async(response: httpx.Response, **kwargs) -> str:
         pass
 
-    async def get_search_results_async(self, params: dict) -> SearchResults:
-        res = await self.fetch_data_async(params)
-        items = await self.parse_response_async(res)
+    @classmethod
+    async def get_search_results_async(cls, params: dict):
+        res = await cls.fetch_data_async(params)
+        items = await cls.parse_response_async(res, **params)
         searchresults = SearchResults(items)
-        return searchresults
+        return searchresults.to_list()
 
-    def get_search_results(self, params: dict) -> SearchResults:
-        res = self.fetch_data(params)
-        items = self.parse_response(res)
+    @classmethod
+    def get_search_results(cls, params: dict):
+        res = cls.fetch_data(params)
+        items = cls.parse_response(res, **params)
         searchresults = SearchResults(items)
-        return searchresults
+        return searchresults.to_list()

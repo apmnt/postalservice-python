@@ -40,7 +40,8 @@ BREANS_MAP = {
 
 class MercariService(BaseService):
 
-    def generate_payload_and_headers(self, params: dict):
+    @staticmethod
+    def generate_payload_and_headers(params: dict):
         if not isinstance(params, dict):
             raise TypeError("params must be a dict")
 
@@ -59,8 +60,6 @@ class MercariService(BaseService):
             mapped_size = None
 
         brands = params.get("brand")
-        print("brands raw")
-        print(brands)
         if brands is None:
             brands = []
         else:
@@ -111,7 +110,8 @@ class MercariService(BaseService):
 
         return payload, headers
 
-    async def fetch_data_async(self, params: dict) -> httpx.Response:
+    @staticmethod
+    async def fetch_data_async(params: dict) -> httpx.Response:
         """
         Fetches data from the Mercari API using the provided search parameters.
 
@@ -127,13 +127,14 @@ class MercariService(BaseService):
         """
 
         url = "https://api.mercari.jp/v2/entities:search"
-        payload, headers = self.generate_payload_and_headers(params)
+        payload, headers = MercariService.generate_payload_and_headers(params)
 
         async with httpx.AsyncClient() as client:
             response = await client.post(url, json=payload, headers=headers)
             return response
 
-    def fetch_data(self, params: dict) -> httpx.Response:
+    @staticmethod
+    def fetch_data(params: dict) -> httpx.Response:
         """
         Fetches data from the Mercari API using the provided search parameters.
 
@@ -149,13 +150,14 @@ class MercariService(BaseService):
         """
 
         url = "https://api.mercari.jp/v2/entities:search"
-        payload, headers = self.generate_payload_and_headers(params)
+        payload, headers = MercariService.generate_payload_and_headers(params)
 
         with httpx.Client() as client:
             response = client.post(url, json=payload, headers=headers)
             return response
 
-    def parse_response(self, response: httpx.Response) -> str:
+    @staticmethod
+    def parse_response(response: httpx.Response, **kwargs) -> str:
         """
         Parses the response from the Mercari API and returns a JSON string of cleaned items.
 
@@ -193,7 +195,6 @@ class MercariService(BaseService):
                 temp["img"].append(
                     img.replace("c!/w=240,f=webp/thumb", "item/detail/orig")
                 )
-            print(item)
             if item.get("itemBrand") is not None:
                 temp["brand"] = item.get("itemBrand").get("subName")
             else:
@@ -203,5 +204,6 @@ class MercariService(BaseService):
         item_json = json.dumps(cleaned_items_list)
         return item_json
 
-    async def parse_response_async(self, response: httpx.Response) -> str:
-        return self.parse_response(response)
+    @staticmethod
+    async def parse_response_async(response: httpx.Response, **kwargs) -> str:
+        return MercariService.parse_response(response)
