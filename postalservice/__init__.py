@@ -1,6 +1,7 @@
 from .services.mercari import MercariService
 from .services.fril import FrilService
 from .services.yjp import YJPService
+from .services.ragtag import RagtagService
 
 
 def create_search_params(
