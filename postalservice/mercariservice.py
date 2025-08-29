@@ -179,6 +179,7 @@ class MercariService(BaseService):
         items = json.loads(response.text)["items"]
         cleaned_items_list = []
         for item in items:
+
             temp = {}
             temp["id"] = item["id"]
             temp["title"] = item["name"]
@@ -188,13 +189,22 @@ class MercariService(BaseService):
                 temp["size"] = item["itemSize"].get("name")
             else:
                 temp["size"] = None
-            temp["url"] = "https://jp.mercari.com/item/" + item["id"]
+            # Hack to check if the listing is a normal listing or a shop listing
+            if len(item["id"]) < 13:
+                temp["url"] = "https://jp.mercari.com/item/" + item["id"]
+            else:
+                temp["url"] = "https://jp.mercari.com/shops/product/" + item["id"]
             thumbnails = item["thumbnails"]
             temp["img"] = []
             for img in thumbnails:
                 temp["img"].append(
                     img.replace("c!/w=240,f=webp/thumb", "item/detail/orig")
                 )
+            try:
+                temp["img"] = MercariService.get_listing_photos(item["id"])
+            except Exception as e:
+                print(f"Error fetching listing photos for item {item['id']}: {e}")
+                print("Used thumbnail")
             if item.get("itemBrand") is not None:
                 temp["brand"] = item.get("itemBrand").get("subName")
             else:
@@ -204,6 +214,59 @@ class MercariService(BaseService):
         item_json = json.dumps(cleaned_items_list)
         return item_json
 
+    @staticmethod
+    def get_listing_photos(item_id: str) -> list:
+        """
+        Fetches the listing photos for a specific item.
+
+        Args:
+            item_id (str): The ID of the item.
+
+        Returns:
+            list: A list of URLs for the item's photos.
+        """
+
+
+        # Hack to check the listing type, if it is a normal listing or a shop listing
+        if len(item_id) < 13:
+            url = f"https://api.mercari.jp/items/get?id={item_id}&include_item_attributes=true&include_product_page_component=true&include_non_ui_item_attributes=true&include_donation=true&include_item_attributes_sections=true&include_auction=true"
+            headers = {
+                "dpop": get_pop_jwt(url, "GET"),
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
+                "x-platform": "web",
+            }
+
+            with httpx.Client() as client:
+                response = client.get(url, headers=headers)
+                try:
+                    data = json.loads(response.text)["data"]
+                    return [
+                        img.replace("c!/w=240,f=webp/thumb", "item/detail/orig")
+                        for img in data.get("photos", [])
+                    ]
+                except (KeyError, json.JSONDecodeError) as e:
+                    print(f"Error fetching listing photos: {e}")
+                    return []
+        else:
+            url = f"https://api.mercari.jp/v1/marketplaces/shops/products/{item_id}?view=FULL&imageType=JPEG"
+            headers = {
+                "dpop": get_pop_jwt(url, "GET"),
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
+                "x-platform": "web",
+            }
+
+            with httpx.Client() as client:
+                response = client.get(url, headers=headers)
+                try:
+                    data = json.loads(response.text)["productDetail"]
+                    return [
+                        img.replace("c!/w=240,f=webp/thumb", "item/detail/orig")
+                        for img in data.get("photos", [])
+                    ]
+                except (KeyError, json.JSONDecodeError) as e:
+                    print(f"Error fetching listing photos: {e}")
+                    return []
+                
     @staticmethod
     async def parse_response_async(response: httpx.Response, **kwargs) -> str:
         return MercariService.parse_response(response)
