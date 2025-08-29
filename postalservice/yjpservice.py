@@ -142,20 +142,53 @@ class YJPService(BaseService):
     def parse_item_details(response_text: str):
         soup = bs4.BeautifulSoup(response_text, "lxml")
         details = {}
-        tr_rows = soup.find_all("tr")
-        if len(tr_rows) > 1:
-            for tr in tr_rows:
-                if tr.text.replace("\n", "").replace(" ", "").startswith("サイズ"):
-                    details["size"] = tr.td.text.replace("\n", "").replace(" ", "")
-                    break
-            for tr in tr_rows:
-                if (
-                    tr.text.replace("\n", "")
-                    .replace(" ", "")
-                    .startswith("メーカー・ブランド")
-                ):
-                    details["brand"] = tr.td.text.replace("\n", "").replace(" ", "")
-                    break
+
+        # Try new format first (with dt/dd structure)
+        size_found = False
+        brand_found = False
+
+        # Look for size in new format
+        dt_elements = soup.find_all("dt", class_="sc-692d621-0 kuVKEG")
+        for dt in dt_elements:
+            if "サイズ" in dt.text:
+                dd = dt.find_next_sibling("dd")
+                if dd:
+                    # Get all li elements within the dd
+                    li_elements = dd.find_all("li", class_="sc-eea015f7-1 bRMkZz")
+                    # The size is typically the last li element (after gender/category)
+                    if li_elements:
+                        # Look for size indicators (single letters, numbers, or size keywords)
+                        for li in reversed(li_elements):  # Start from the end
+                            size_text = li.text.strip()
+                            # Check if this looks like a size (S, M, L, XL, numbers, etc.)
+                            if len(size_text) <= 4 and (
+                                size_text
+                                in ["XS", "S", "M", "L", "XL", "XXL", "FREE", "ONESIZE"]
+                                or size_text.isdigit()
+                                or any(char.isdigit() for char in size_text)
+                            ):
+                                details["size"] = size_text
+                                size_found = True
+                                break
+                        if not size_found and li_elements:
+                            # If no clear size found, take the last item
+                            details["size"] = li_elements[-1].text.strip()
+                            size_found = True
+                break
+
+        # Look for brand in new format
+        for dt in dt_elements:
+            if "ブランド" in dt.text:
+                dd = dt.find_next_sibling("dd")
+                if dd:
+                    # Brand might be in an anchor tag or directly in dd
+                    brand_link = dd.find("a")
+                    if brand_link:
+                        details["brand"] = brand_link.text.strip()
+                    else:
+                        details["brand"] = dd.text.strip()
+                    brand_found = True
+                break
 
         # First try to find images in the slick-track carousel structure
         slick_track = soup.select_one(".slick-track")
