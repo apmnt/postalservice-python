@@ -6,7 +6,7 @@ import string
 import bs4
 import httpx
 from .baseservice import BaseService
-from .utils.network_utils import fetch_async
+from ..utils.network_utils import fetch_async
 
 CHARACTERS = string.ascii_lowercase + string.digits
 

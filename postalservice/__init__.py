@@ -1,6 +1,6 @@
-from .mercariservice import MercariService
-from .frilservice import FrilService
-from .yjpservice import YJPService
+from .services.mercari import MercariService
+from .services.fril import FrilService
+from .services.yjp import YJPService
 
 
 def create_search_params(

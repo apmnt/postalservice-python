@@ -4,7 +4,7 @@ import random
 import string
 import httpx
 from .baseservice import BaseService
-from .utils.network_utils import get_pop_jwt
+from ..utils.network_utils import get_pop_jwt
 
 CHARACTERS = string.ascii_lowercase + string.digits
 
