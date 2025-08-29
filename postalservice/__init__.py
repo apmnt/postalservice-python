@@ -1,6 +1,7 @@
 from .services.mercari import MercariService
 from .services.fril import FrilService
 from .services.yjp import YJPService
+from .services.kindal import KindalService
 from .services.ragtag import RagtagService
 from .services.okoku import OkokuService
 from .services.trefac import TrefacService
