@@ -3,6 +3,7 @@ from .services.fril import FrilService
 from .services.yjp import YJPService
 from .services.ragtag import RagtagService
 from .services.okoku import OkokuService
+from .services.trefac import TrefacService
 
 
 def create_search_params(
