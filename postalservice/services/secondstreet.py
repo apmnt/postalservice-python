@@ -108,21 +108,11 @@ class SecondStreetService(BaseService):
                     }
                 )
 
-                # Navigate to the URL
-                await page.goto(url, wait_until="networkidle", timeout=30000)
-
-                # Wait for the content to load
-                try:
-                    # Wait for item cards to appear
-                    await page.wait_for_selector(
-                        ".itemCardList.-wrap .itemCard_inner", timeout=10000
-                    )
-                except:
-                    # If no items found, still get the page content
-                    pass
+                # Navigate to the URL (match the sync version more closely)
+                await page.goto(url, timeout=30000)
 
                 # Add a small delay to ensure all JavaScript has executed
-                await page.wait_for_timeout(2000)
+                await page.wait_for_timeout(1000)
 
                 # Get the page content
                 content = await page.content()
@@ -359,7 +349,7 @@ class SecondStreetService(BaseService):
                     }
                 )
 
-                await page.goto(url, wait_until="networkidle", timeout=30000)
+                await page.goto(url, timeout=30000)
                 content = await page.content()
                 await browser.close()
                 return content
