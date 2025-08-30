@@ -157,6 +157,7 @@ class SecondStreetService(BaseService):
 
         Args:
             response_text (str): The response text from the API.
+            **kwargs: Additional parameters including item_count.
 
         Returns:
             list: A list of dictionaries containing item information.
@@ -168,7 +169,11 @@ class SecondStreetService(BaseService):
             # Find all item cards in the search results
             item_cards = soup.select(".itemCardList.-wrap .itemCard_inner")
 
-            for card in item_cards:
+            # Get the item count limit from kwargs, default to a reasonable number if not specified
+            item_count = kwargs.get("item_count", 36)
+
+            # Limit the number of items to process
+            for card in item_cards[:item_count]:
                 try:
                     item = {}
 
@@ -233,7 +238,19 @@ class SecondStreetService(BaseService):
                                 img_src = f"https:{img_src}"
                             elif img_src.startswith("/"):
                                 img_src = f"https://www.2ndstreet.jp{img_src}"
-                            item["img"] = [img_src]
+
+                            # Remove "_tn" from the image URL
+                            img_src = img_src.replace("_tn", "")
+
+                            # Create a list with the first image and a second image
+                            images = [img_src]
+
+                            # Generate second image by changing "1.jpg" to "2.jpg"
+                            if img_src.endswith("1.jpg"):
+                                second_img = img_src.replace("1.jpg", "2.jpg")
+                                images.append(second_img)
+
+                            item["img"] = images
                         else:
                             item["img"] = []
                     else:
@@ -277,11 +294,12 @@ class SecondStreetService(BaseService):
 
         Args:
             response_text (str): The response text from the API.
+            **kwargs: Additional parameters including item_count.
 
         Returns:
             list: A list of dictionaries containing item information.
         """
-        return SecondStreetService.parse_response(response_text)
+        return SecondStreetService.parse_response(response_text, **kwargs)
 
     @staticmethod
     def get_base_details() -> dict:
