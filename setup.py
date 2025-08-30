@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="postalservice",
-    version="0.1.8",
+    version="0.2.0",
     author="Aapo Montin",
     description="A package for second hand shopping",
     long_description=long_description,
