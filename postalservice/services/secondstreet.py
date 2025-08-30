@@ -85,17 +85,22 @@ class SecondStreetService(BaseService):
         try:
             url = SecondStreetService.get_search_params(params)
 
+            print("fetching 2ndstreet async...")
             async with async_playwright() as p:
                 # Launch browser
+                print("launching browser...")
                 browser = await p.firefox.launch(headless=True)
+                print("browser launched")
                 context = await browser.new_context(
                     user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Safari/605.1.15"
                 )
 
                 # Create a new page
+                print("creating new page...")
                 page = await context.new_page()
 
                 # Set additional headers
+                print("setting extra HTTP headers...")
                 await page.set_extra_http_headers(
                     {
                         "Accept": "*/*",
@@ -109,14 +114,17 @@ class SecondStreetService(BaseService):
                 )
 
                 # Navigate to the URL (match the sync version more closely)
+                print("navigating to URL...")
                 await page.goto(url, timeout=30000)
 
                 # Add a small delay to ensure all JavaScript has executed
+                print("waiting for timeout...")
                 await page.wait_for_timeout(1000)
 
                 # Get the page content
+                print("getting page content...")
                 content = await page.content()
-
+                print("closing browser...")
                 await browser.close()
                 return content
 
