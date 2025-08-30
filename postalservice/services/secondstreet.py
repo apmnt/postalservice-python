@@ -33,8 +33,17 @@ class SecondStreetService(BaseService):
             url = SecondStreetService.get_search_params(params)
 
             with sync_playwright() as p:
-                # Launch browser
-                browser = p.firefox.launch(headless=True)
+                # Launch browser with container-friendly options
+                browser = p.firefox.launch(
+                    headless=True,
+                    args=[
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-gpu",
+                        "--disable-web-security",
+                        "--disable-features=VizDisplayCompositor",
+                    ],
+                )
                 context = browser.new_context(
                     user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Safari/605.1.15"
                 )
@@ -87,9 +96,18 @@ class SecondStreetService(BaseService):
 
             print("fetching 2ndstreet async...")
             async with async_playwright() as p:
-                # Launch browser
+                # Launch browser with container-friendly options
                 print("launching browser...")
-                browser = await p.firefox.launch(headless=True)
+                browser = await p.firefox.launch(
+                    headless=True,
+                    args=[
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-gpu",
+                        "--disable-web-security",
+                        "--disable-features=VizDisplayCompositor",
+                    ],
+                )
                 print("browser launched")
                 context = await browser.new_context(
                     user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Safari/605.1.15"
@@ -335,9 +353,18 @@ class SecondStreetService(BaseService):
         """
         try:
             async with async_playwright() as p:
-                # Launch browser
-                browser = await p.firefox.launch(headless=True)
-                context = await browser.new_context(
+                # Launch browser with container-friendly options
+                browser = await p.firefox.launch(
+                    headless=True,
+                    args=[
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-gpu",
+                        "--disable-web-security",
+                        "--disable-features=VizDisplayCompositor",
+                    ],
+                )
+                context = browser.new_context(
                     user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Safari/605.1.15"
                 )
 
@@ -372,8 +399,17 @@ class SecondStreetService(BaseService):
         """
         try:
             with sync_playwright() as p:
-                # Launch browser
-                browser = p.firefox.launch(headless=True)
+                # Launch browser with container-friendly options
+                browser = p.firefox.launch(
+                    headless=True,
+                    args=[
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-gpu",
+                        "--disable-web-security",
+                        "--disable-features=VizDisplayCompositor",
+                    ],
+                )
                 context = browser.new_context(
                     user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Safari/605.1.15"
                 )
