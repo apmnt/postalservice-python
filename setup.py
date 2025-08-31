@@ -11,4 +11,22 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
+    install_requires=[
+        "cryptography",
+        "httpx",
+        "jose",
+        "python_jose",
+        "setuptools",
+        "bs4",
+        "lxml",
+        "playwright",
+    ],
+    extras_require={
+        "dev": [
+            "pytest",
+            "pytest_mock",
+            "pytest-asyncio",
+        ],
+    },
+    python_requires=">=3.7",
 )
