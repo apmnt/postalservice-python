@@ -6,7 +6,6 @@ from .baseservice import BaseService
 
 
 class KindalService(BaseService):
-
     @staticmethod
     def generate_url_and_headers(params: dict):
         """
@@ -42,6 +41,7 @@ class KindalService(BaseService):
             "build_filter_tree": "true",
             "sid": session_id,
             "pg": "search_page",
+            "pf_st_zai_ku_zhuang_kuang[]": "true",
             "zero_options": "true",
             "product_available": "false",
             "variant_available": "false",
